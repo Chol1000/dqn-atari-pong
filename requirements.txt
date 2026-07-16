@@ -1,0 +1,19 @@
+stable-baselines3[extra]>=2.3.0
+gymnasium[atari]>=0.29.1
+ale-py>=0.8.1
+autorom[accept-rom-license]>=0.6.1
+torch>=2.0.0
+opencv-python>=4.8.0
+moviepy>=1.0.3
+tensorboard>=2.14.0
+pandas>=2.0.0
+
+# Notes:
+# - Modern ale-py (0.9+) bundles Atari ROMs directly; `AutoROM --accept-license`
+#   is a safety-net no-op in that case, and a required one-time download on older ale-py.
+# - RAM observations use gym.make("ALE/<Game>-v5", obs_type="ram"), the officially
+#   documented mechanism, so this code works unchanged across ale-py/gymnasium versions.
+# - Do NOT pin numpy<2.0: Colab's base image ships numpy>=2.0 and many pre-installed
+#   packages (opencv, jax, tifffile, etc.) are built against its ABI. Downgrading numpy
+#   breaks all of them with "numpy.dtype size changed" errors. The old-gym deprecation
+#   warning about NumPy 2.0 is harmless and safe to ignore - leave numpy unpinned.
