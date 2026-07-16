@@ -1,0 +1,11 @@
+timestamp,member,exp_id,env_id,policy,lr,gamma,batch_size,epsilon_start,epsilon_end,epsilon_decay,buffer_size,learning_starts,total_timesteps,mean_reward,std_reward,mean_ep_length,train_seconds,model_path,noted_behavior
+2026-07-07T14:21:11,Chol,1,PongNoFrameskip-v4,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,100000,10000,300000,-21.0,0.0,757.2,1248.7,models/Chol_exp1_CnnPolicy.zip,Baseline configuration (SB3 default-like values)
+2026-07-07T14:41:53,Chol,2,PongNoFrameskip-v4,CnnPolicy,0.001,0.99,32,1.0,0.01,0.1,100000,10000,300000,-21.0,0.0,757.2,1215.5,models/Chol_exp2_CnnPolicy.zip,Higher lr may speed up early learning but risks instability
+2026-07-07T15:02:32,Chol,3,PongNoFrameskip-v4,CnnPolicy,1e-05,0.99,32,1.0,0.01,0.1,100000,10000,300000,-21.0,0.0,757.2,1212.5,models/Chol_exp3_CnnPolicy.zip,Lower lr should be more stable but slower to converge
+2026-07-07T15:22:56,Chol,4,PongNoFrameskip-v4,CnnPolicy,0.0001,0.99,16,1.0,0.01,0.1,100000,10000,300000,-20.8,0.4,817.2,1194.7,models/Chol_exp4_CnnPolicy.zip,Smaller batch -> noisier gradient estimates
+2026-07-07T15:51:01,Chol,5,PongNoFrameskip-v4,CnnPolicy,0.0001,0.99,64,1.0,0.01,0.1,100000,10000,300000,-10.8,7.63,2219.6,1574.2,models/Chol_exp5_CnnPolicy.zip,Larger batch -> smoother gradients and more compute per step
+2026-07-07T16:24:05,Chol,6,PongNoFrameskip-v4,CnnPolicy,0.0001,0.99,128,1.0,0.01,0.1,100000,10000,300000,-9.8,10.44,2910.8,1911.8,models/Chol_exp6_CnnPolicy.zip,Even larger batch: expect diminishing returns vs compute cost
+2026-07-07T16:45:30,Chol,7,PongNoFrameskip-v4,CnnPolicy,0.001,0.99,64,1.0,0.01,0.1,100000,10000,300000,-21.0,0.0,757.2,1257.3,models/Chol_exp7_CnnPolicy.zip,Combo: high lr + large batch to offset gradient noise
+2026-07-07T17:05:49,Chol,8,PongNoFrameskip-v4,CnnPolicy,1e-05,0.99,16,1.0,0.01,0.1,100000,10000,300000,-21.0,0.0,757.2,1192.3,models/Chol_exp8_CnnPolicy.zip,Combo: low lr + small batch - expect slow/underfit learning
+2026-07-07T17:26:20,Chol,9,PongNoFrameskip-v4,CnnPolicy,0.00025,0.99,32,1.0,0.01,0.1,100000,10000,300000,-21.0,0.0,757.2,1203.8,models/Chol_exp9_CnnPolicy.zip,SB3-Zoo-style lr for comparison against our baseline
+2026-07-07T18:04:56,Chol,10,PongNoFrameskip-v4,CnnPolicy,0.0001,0.99,256,1.0,0.01,0.1,100000,10000,300000,16.0,5.69,1872.8,2264.1,models/Chol_exp10_CnnPolicy.zip,Very large batch: stability vs wall-clock time trade-off

@@ -1,0 +1,11 @@
+member,exp_id,policy,lr,gamma,batch_size,epsilon_start,epsilon_end,epsilon_decay,buffer_size,learning_starts,total_timesteps,hypothesis
+Chol,1,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,100000,10000,300000,Baseline configuration (SB3 default-like values)
+Chol,2,CnnPolicy,0.001,0.99,32,1.0,0.01,0.1,100000,10000,300000,Higher lr may speed up early learning but risks instability
+Chol,3,CnnPolicy,1e-05,0.99,32,1.0,0.01,0.1,100000,10000,300000,Lower lr should be more stable but slower to converge
+Chol,4,CnnPolicy,0.0001,0.99,16,1.0,0.01,0.1,100000,10000,300000,Smaller batch -> noisier gradient estimates
+Chol,5,CnnPolicy,0.0001,0.99,64,1.0,0.01,0.1,100000,10000,300000,Larger batch -> smoother gradients and more compute per step
+Chol,6,CnnPolicy,0.0001,0.99,128,1.0,0.01,0.1,100000,10000,300000,Even larger batch: expect diminishing returns vs compute cost
+Chol,7,CnnPolicy,0.001,0.99,64,1.0,0.01,0.1,100000,10000,300000,Combo: high lr + large batch to offset gradient noise
+Chol,8,CnnPolicy,1e-05,0.99,16,1.0,0.01,0.1,100000,10000,300000,Combo: low lr + small batch - expect slow/underfit learning
+Chol,9,CnnPolicy,0.00025,0.99,32,1.0,0.01,0.1,100000,10000,300000,SB3-Zoo-style lr for comparison against our baseline
+Chol,10,CnnPolicy,0.0001,0.99,256,1.0,0.01,0.1,100000,10000,300000,Very large batch: stability vs wall-clock time trade-off
