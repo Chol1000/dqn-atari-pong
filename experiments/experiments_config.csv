@@ -19,3 +19,8 @@ Lorita,7,CnnPolicy,0.0001,0.99,32,1.0,0.05,0.1,100000,10000,300000,Higher epsilo
 Lorita,8,CnnPolicy,0.0001,0.99,32,1.0,0.0,0.1,100000,10000,300000,Fully greedy at end of decay (epsilon_end=0)
 Lorita,9,CnnPolicy,0.0001,0.95,32,1.0,0.01,0.2,100000,10000,300000,Combo: reduced gamma + slower epsilon decay
 Lorita,10,CnnPolicy,0.0001,0.999,32,1.0,0.05,0.1,100000,10000,300000,Combo: high gamma + higher exploration floor
+Josephine,1,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,100000,10000,300000,Baseline configuration (CnnPolicy on pixels) for architecture comparison
+Josephine,2,MlpPolicy,0.0001,0.99,32,1.0,0.01,0.1,100000,10000,300000,Same hyperparameters but MlpPolicy on RAM observations (architecture comparison)
+Josephine,3,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,10000,10000,300000,Small replay buffer -> more correlated/repetitive samples
+Josephine,4,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,150000,10000,300000,Large replay buffer -> more diverse samples and higher memory cost
+Josephine,5,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,100000,1000,300000,Learning starts early -> updates on a very small/immature buffer
