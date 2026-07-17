@@ -28,4 +28,4 @@ Duba,6,CnnPolicy,0.0001,0.99,32,1.0,0.01,0.1,100000,25000,300000,Learning starts
 Duba,7,MlpPolicy,0.001,0.99,32,1.0,0.01,0.1,100000,10000,300000,MlpPolicy with higher lr: does RAM-based learning tolerate it better?
 Duba,8,MlpPolicy,0.0001,0.99,64,1.0,0.01,0.1,100000,10000,300000,MlpPolicy with larger batch size
 Duba,9,CnnPolicy,0.0001,0.99,64,1.0,0.01,0.1,150000,10000,300000,Combo: large buffer + large batch
-Josephine,10,MlpPolicy,0.0001,0.95,32,1.0,0.01,0.1,100000,10000,300000,Combo: MlpPolicy + reduced gamma
+Duba,10,MlpPolicy,0.0001,0.95,32,1.0,0.01,0.1,100000,10000,300000,Combo: MlpPolicy + reduced gamma
