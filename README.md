@@ -7,9 +7,13 @@ DQN agent trained with Stable Baselines3 on Pong, comparing `CnnPolicy` (pixel f
 ## Setup
 
 ```bash
+python3 -m venv venv
+source venv/bin/activate    # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 GPU recommended (trained on Colab Pro, L4 GPU). Full pipeline: `notebooks/Formative_3_DQN_Colab.ipynb`.
+
+`play.py` also needs a real display to open a live window (`--render-mode human`), or run headless with `--record` (see below) if there's no display available.
 
 ## Usage
 
