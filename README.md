@@ -4,6 +4,16 @@ DQN agent trained with Stable Baselines3 on Pong, comparing `CnnPolicy` (pixel f
 
 **Team:** Chol (learning rate & batch size), Lorita (gamma & epsilon-greedy schedule), Josephine (replay buffer/learning-starts & CNN vs MLP).
 
+## Repository Structure
+
+- `train.py`, `play.py`, `envs.py` — training, evaluation, and shared environment code
+- `run_experiments.py`, `finalize_submission.py` — sweep automation and README generation
+- `experiments/` — hyperparameter configs and logged results (CSV)
+- `models/dqn_model.zip` — final trained model
+- `videos/` — recorded gameplay clip
+- `notebooks/` — full Colab pipeline (all 30 experiments + final model + video, in one run)
+- `docs/` — DQN/RL concepts primer, per-member analysis write-ups, and the coach tracking sheet
+
 ## Setup
 
 ```bash
@@ -34,38 +44,50 @@ python play.py --model-path models/dqn_model.zip --policy CnnPolicy --episodes 5
 
 ## Hyperparameter Tuning Results
 <!-- TABLE_START -->
-| Member | Exp # | Policy | lr | gamma | batch_size | epsilon_start | epsilon_end | epsilon_decay | Mean Reward | Mean Ep. Length | Noted Behavior |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| Chol | 1 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Baseline configuration (SB3 default-like values) (baseline) |
-| Chol | 2 | CnnPolicy | 0.001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Higher lr may speed up early learning but risks instability (no change) |
-| Chol | 3 | CnnPolicy | 1e-05 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Lower lr should be more stable but slower to converge (no change) |
-| Chol | 4 | CnnPolicy | 0.0001 | 0.99 | 16 | 1.0 | 0.01 | 0.1 | -20.8 | 817.2 | Smaller batch -> noisier gradient estimates (-21.0 -> -20.8) |
-| Chol | 5 | CnnPolicy | 0.0001 | 0.99 | 64 | 1.0 | 0.01 | 0.1 | -10.8 | 2219.6 | Larger batch -> smoother gradients and more compute per step (-21.0 -> -10.8) |
-| Chol | 6 | CnnPolicy | 0.0001 | 0.99 | 128 | 1.0 | 0.01 | 0.1 | -9.8 | 2910.8 | Even larger batch: expect diminishing returns vs compute cost (-21.0 -> -9.8) |
-| Chol | 7 | CnnPolicy | 0.001 | 0.99 | 64 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Combo: high lr + large batch to offset gradient noise (no change) |
-| Chol | 8 | CnnPolicy | 1e-05 | 0.99 | 16 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Combo: low lr + small batch - expect slow/underfit learning (no change) |
-| Chol | 9 | CnnPolicy | 0.00025 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | SB3-Zoo-style lr for comparison against our baseline (no change) |
-| Chol | 10 | CnnPolicy | 0.0001 | 0.99 | 256 | 1.0 | 0.01 | 0.1 | 16.0 | 1872.8 | Very large batch: stability vs wall-clock time trade-off (-21.0 -> +16.0) |
-| Lorita | 1 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Baseline configuration (same as Chol exp1 for a shared reference point) (baseline) |
-| Lorita | 2 | CnnPolicy | 0.0001 | 0.9 | 32 | 1.0 | 0.01 | 0.1 | -20.4 | 1801.2 | Lower gamma -> more short-sighted agent and may miss long rallies (-21.0 -> -20.4) |
-| Lorita | 3 | CnnPolicy | 0.0001 | 0.95 | 32 | 1.0 | 0.01 | 0.1 | -15.6 | 2436.2 | Moderate gamma reduction (-21.0 -> -15.6) |
-| Lorita | 4 | CnnPolicy | 0.0001 | 0.999 | 32 | 1.0 | 0.01 | 0.1 | -17.4 | 1454.2 | Very high gamma -> values distant future reward almost equally (-21.0 -> -17.4) |
-| Lorita | 5 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.3 | -20.4 | 852.2 | Slower epsilon decay -> prolonged exploration (-21.0 -> -20.4) |
-| Lorita | 6 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.02 | -16.8 | 1299.2 | Faster epsilon decay -> agent exploits sooner and risks a local optimum (-21.0 -> -16.8) |
-| Lorita | 7 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.05 | 0.1 | -19.4 | 1345.2 | Higher epsilon floor -> never fully stops exploring (-21.0 -> -19.4) |
-| Lorita | 8 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.0 | 0.1 | -14.4 | 2636.2 | Fully greedy at end of decay (epsilon_end=0) (-21.0 -> -14.4) |
-| Lorita | 9 | CnnPolicy | 0.0001 | 0.95 | 32 | 1.0 | 0.01 | 0.2 | -16.6 | 1957.2 | Combo: reduced gamma + slower epsilon decay (-21.0 -> -16.6) |
-| Lorita | 10 | CnnPolicy | 0.0001 | 0.999 | 32 | 1.0 | 0.05 | 0.1 | -20.0 | 1057.2 | Combo: high gamma + higher exploration floor (-21.0 -> -20.0) |
-| Josephine | 1 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 757.2 | Baseline configuration (CnnPolicy on pixels) for architecture comparison (baseline) |
-| Josephine | 2 | MlpPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 764.0 | Same hyperparameters but MlpPolicy on RAM observations (architecture comparison) (no change) |
-| Josephine | 3 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -16.4 | 2058.2 | Small replay buffer -> more correlated/repetitive samples (-21.0 -> -16.4) |
-| Josephine | 4 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -19.2 | 757.2 | Large replay buffer -> more diverse samples and higher memory cost (-21.0 -> -19.2) |
-| Josephine | 5 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -15.0 | 7723.6 | Learning starts early -> updates on a very small/immature buffer (-21.0 -> -15.0) |
-| Josephine | 6 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -14.4 | 3029.2 | Learning starts late -> longer pure-exploration warmup (-21.0 -> -14.4) |
-| Josephine | 7 | MlpPolicy | 0.001 | 0.99 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 764.0 | MlpPolicy with higher lr: does RAM-based learning tolerate it better? (no change) |
-| Josephine | 8 | MlpPolicy | 0.0001 | 0.99 | 64 | 1.0 | 0.01 | 0.1 | -21.0 | 764.0 | MlpPolicy with larger batch size (no change) |
-| Josephine | 9 | CnnPolicy | 0.0001 | 0.99 | 64 | 1.0 | 0.01 | 0.1 | -14.0 | 2898.2 | Combo: large buffer + large batch (-21.0 -> -14.0) |
-| Josephine | 10 | MlpPolicy | 0.0001 | 0.95 | 32 | 1.0 | 0.01 | 0.1 | -21.0 | 792.0 | Combo: MlpPolicy + reduced gamma (no change) |
+### Chol — Learning Rate & Batch Size
+
+| Exp # | Policy | lr | gamma | batch_size | epsilon (start/end/decay) | Mean Reward | Mean Ep. Length | Noted Behavior |
+|---|---|---|---|---|---|---|---|---|
+| 1 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Baseline configuration (baseline) |
+| 2 | CnnPolicy | 0.001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Higher lr may speed up early learning but risks instability (no change) |
+| 3 | CnnPolicy | 1e-05 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Lower lr should be more stable but slower to converge (no change) |
+| 4 | CnnPolicy | 0.0001 | 0.99 | 16 | 1.0 / 0.01 / 0.1 | -20.8 | 817.2 | Smaller batch -> noisier gradient estimates (-21.0 -> -20.8) |
+| 5 | CnnPolicy | 0.0001 | 0.99 | 64 | 1.0 / 0.01 / 0.1 | -10.8 | 2219.6 | Larger batch -> smoother gradients and more compute per step (-21.0 -> -10.8) |
+| 6 | CnnPolicy | 0.0001 | 0.99 | 128 | 1.0 / 0.01 / 0.1 | -9.8 | 2910.8 | Even larger batch: expect diminishing returns vs compute cost (-21.0 -> -9.8) |
+| 7 | CnnPolicy | 0.001 | 0.99 | 64 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Combo: high lr + large batch to offset gradient noise (no change) |
+| 8 | CnnPolicy | 1e-05 | 0.99 | 16 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Combo: low lr + small batch - expect slow/underfit learning (no change) |
+| 9 | CnnPolicy | 0.00025 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | SB3-Zoo-style lr for comparison against our baseline (no change) |
+| 10 | CnnPolicy | 0.0001 | 0.99 | 256 | 1.0 / 0.01 / 0.1 | **16.0** | 1872.8 | Very large batch: stability vs wall-clock time trade-off (-21.0 -> +16.0) |
+
+### Lorita — Gamma & Epsilon-Greedy Schedule
+
+| Exp # | Policy | lr | gamma | batch_size | epsilon (start/end/decay) | Mean Reward | Mean Ep. Length | Noted Behavior |
+|---|---|---|---|---|---|---|---|---|
+| 1 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Baseline configuration (same as Chol exp1 for a shared reference point) (baseline) |
+| 2 | CnnPolicy | 0.0001 | 0.9 | 32 | 1.0 / 0.01 / 0.1 | -20.4 | 1801.2 | Lower gamma -> more short-sighted agent and may miss long rallies (-21.0 -> -20.4) |
+| 3 | CnnPolicy | 0.0001 | 0.95 | 32 | 1.0 / 0.01 / 0.1 | -15.6 | 2436.2 | Moderate gamma reduction (-21.0 -> -15.6) |
+| 4 | CnnPolicy | 0.0001 | 0.999 | 32 | 1.0 / 0.01 / 0.1 | -17.4 | 1454.2 | Very high gamma -> values distant future reward almost equally (-21.0 -> -17.4) |
+| 5 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.3 | -20.4 | 852.2 | Slower epsilon decay -> prolonged exploration (-21.0 -> -20.4) |
+| 6 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.02 | -16.8 | 1299.2 | Faster epsilon decay -> agent exploits sooner and risks a local optimum (-21.0 -> -16.8) |
+| 7 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.05 / 0.1 | -19.4 | 1345.2 | Higher epsilon floor -> never fully stops exploring (-21.0 -> -19.4) |
+| 8 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.0 / 0.1 | -14.4 | 2636.2 | Fully greedy at end of decay (epsilon_end=0) (-21.0 -> -14.4) |
+| 9 | CnnPolicy | 0.0001 | 0.95 | 32 | 1.0 / 0.01 / 0.2 | -16.6 | 1957.2 | Combo: reduced gamma + slower epsilon decay (-21.0 -> -16.6) |
+| 10 | CnnPolicy | 0.0001 | 0.999 | 32 | 1.0 / 0.05 / 0.1 | -20.0 | 1057.2 | Combo: high gamma + higher exploration floor (-21.0 -> -20.0) |
+
+### Josephine — Replay Buffer / Learning-Starts & CNN vs MLP
+
+| Exp # | Policy | lr | gamma | batch_size | epsilon (start/end/decay) | Mean Reward | Mean Ep. Length | Noted Behavior |
+|---|---|---|---|---|---|---|---|---|
+| 1 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 757.2 | Baseline configuration (CnnPolicy on pixels) for architecture comparison (baseline) |
+| 2 | MlpPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 764.0 | Same hyperparameters but MlpPolicy on RAM observations (architecture comparison) (no change) |
+| 3 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -16.4 | 2058.2 | Small replay buffer -> more correlated/repetitive samples (-21.0 -> -16.4) |
+| 4 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -19.2 | 757.2 | Large replay buffer -> more diverse samples and higher memory cost (-21.0 -> -19.2) |
+| 5 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -15.0 | 7723.6 | Learning starts early -> updates on a very small/immature buffer (-21.0 -> -15.0) |
+| 6 | CnnPolicy | 0.0001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -14.4 | 3029.2 | Learning starts late -> longer pure-exploration warmup (-21.0 -> -14.4) |
+| 7 | MlpPolicy | 0.001 | 0.99 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 764.0 | MlpPolicy with higher lr: does RAM-based learning tolerate it better? (no change) |
+| 8 | MlpPolicy | 0.0001 | 0.99 | 64 | 1.0 / 0.01 / 0.1 | -21.0 | 764.0 | MlpPolicy with larger batch size (no change) |
+| 9 | CnnPolicy | 0.0001 | 0.99 | 64 | 1.0 / 0.01 / 0.1 | -14.0 | 2898.2 | Combo: large buffer + large batch (-21.0 -> -14.0) |
+| 10 | MlpPolicy | 0.0001 | 0.95 | 32 | 1.0 / 0.01 / 0.1 | -21.0 | 792.0 | Combo: MlpPolicy + reduced gamma (no change) |
 <!-- TABLE_END -->
 
 ### Discussion
